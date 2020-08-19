@@ -40,11 +40,16 @@ mod tests {
     fn test_day_01() {
         assert_eq!(2, get_fuel_data(12));
         assert_eq!(2, get_fuel_data(14));
-        assert_eq!(654, get_fuel_data(1969));
-        assert_eq!(33583, get_fuel_data(100756));
+        assert_eq!(966, get_fuel_data(1969));
+        assert_eq!(50346, get_fuel_data(100756));
     } 
 }
 
 fn get_fuel_data(mass: i32) -> i32 {
-    return (mass/3)-2;
+    let final_mass:i32 = (mass/3) - 2;
+    
+    if final_mass <= 0 {
+        return 0;
+    }
+    return final_mass + get_fuel_data(final_mass);
 }
