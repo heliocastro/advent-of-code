@@ -21,15 +21,26 @@ fn main() {
         .expect("File not found !");        
     let data = BufReader::new(input);
 
-    let mut path:Vec<String> = Vec::new();
+    let mut slopes:Vec<String> = Vec::new();
     for line in data.lines() {
         let entry:String = line.unwrap().parse().unwrap();
-        path.push(entry);
+        slopes.push(entry);
     }
 
-    let trees = process_program(path);
+    let test_slopes = vec![(1,1), (3,1), (5,1), (7,1), (1,2)];
+    let trees = process_program(slopes.clone(), (3,1));
+    let mut tree_probability:u64 = 0;
 
-    println!("Number of trees: {}", trees);
+    for mtrees in test_slopes {
+        if tree_probability == 0 {
+            tree_probability = process_program(slopes.clone(), mtrees) as u64;
+        } else {
+            tree_probability = tree_probability * process_program(slopes.clone(), mtrees) as u64;
+        }
+    }
+
+    println!("Number of trees for original 3,1 path: {}", trees);
+    println!("Tree probability slope: {}", tree_probability);
 }
 
 #[cfg(test)]
@@ -51,29 +62,37 @@ mod tests {
             "#...##....#".to_string(),
             ".#..#...#.#".to_string(),
         ]; 
-        assert_eq!(process_program(path), 7)
+        assert_eq!(process_program(path.clone(), (1,1)), 2);
+        assert_eq!(process_program(path.clone(), (3,1)), 7);
+        assert_eq!(process_program(path.clone(), (5,1)), 3);
+        assert_eq!(process_program(path.clone(), (7,1)), 4);
+        assert_eq!(process_program(path.clone(), (1,2)), 2);
     }
 }
 
 // Return number of trees
-fn process_program(path:Vec<String>) -> u32 {
-    
-    let mut manipulated_path = path.clone();
+fn process_program(slopes:Vec<String>, walk:(u32, u32)) -> u32 {  
+    let mut manipulated_path = slopes.clone();
     // First entry should be discarded as we will jump
     // down anyway
     let mut entry:String = manipulated_path.remove(0);
-    let path_lenght:u32 = entry.len() as u32;
     let mut steps:u32 = 0;
     let mut trees:u32 = 0;
 
-    for _distance in 0..path.len() {
-        if manipulated_path.is_empty() {
-            manipulated_path = path.clone();
-        }
-        entry = manipulated_path.remove(0);
-        steps = steps + 3;
-        if path_lenght <= steps {
-            steps = steps - path_lenght;
+    while ! manipulated_path.is_empty() {
+        for _down in 0..walk.1 {
+            if manipulated_path.is_empty() {
+                break;
+            }
+            entry = manipulated_path.remove(0);
+        }      
+        
+        steps = steps + walk.0;
+
+        // Duplicate as needed
+        let dup = entry.clone();
+        while steps >= entry.len() as u32 {
+            entry.push_str(&dup.clone());
         }
         
         let cur:char = entry.chars().nth(steps as usize).unwrap();
