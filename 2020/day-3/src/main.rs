@@ -1,9 +1,8 @@
 extern crate clap;
+extern crate advent_lib;
 
 use clap::{Arg,App};
-use std::fs::File;
-use std::io::BufReader;
-use std::io::prelude::*;
+use advent_lib::utils;
 
 fn main() {
     let input_arguments = App::new("Advent 2020 Day One")
@@ -17,16 +16,8 @@ fn main() {
 
     // Load the input file
     let filename = input_arguments.value_of("input").unwrap();
-    let input = File::open(filename)
-        .expect("File not found !");        
-    let data = BufReader::new(input);
-
-    let mut slopes:Vec<String> = Vec::new();
-    for line in data.lines() {
-        let entry:String = line.unwrap().parse().unwrap();
-        slopes.push(entry);
-    }
-
+    let slopes = utils::read_input(filename);
+    
     let test_slopes = vec![(1,1), (3,1), (5,1), (7,1), (1,2)];
     let trees = process_program(slopes.clone(), (3,1));
     let mut tree_probability:u64 = 0;

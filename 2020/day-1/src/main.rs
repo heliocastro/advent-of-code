@@ -1,9 +1,8 @@
 extern crate clap;
+extern crate advent_lib;
 
 use clap::{Arg,App};
-use std::fs::File;
-use std::io::BufReader;
-use std::io::prelude::*;
+use advent_lib::utils;
 
 fn main() {
     let input_arguments = App::new("Advent 2020 Day One")
@@ -17,14 +16,12 @@ fn main() {
 
     // Load the input file
     let filename = input_arguments.value_of("input").unwrap();
-    let input = File::open(filename)
-        .expect("File not found !");        
-    let data = BufReader::new(input);
 
     // Read all entry data in a Vec
     let mut report_data:Vec<u32> = Vec::new();
-    for line in data.lines() {
-        report_data.push(line.unwrap().parse::<u32>().unwrap());
+    let data = utils::read_input(filename);
+    for line in data {
+        report_data.push(line.parse::<u32>().unwrap());
     }
     let res = process_program(report_data);
     println!("Result data = {} {}", res.0, res.1);
