@@ -1,27 +1,16 @@
-extern crate clap;
 extern crate regex;
 
 extern crate advent_lib;
 
-use clap::{Arg,App};
 use regex::Regex;
 
 // Project internal moduels
 use advent_lib::utils;
 
 fn main() {
-    let input_arguments = App::new("Advent 2020 Day One")
-        .version("0.1.0")
-        .author("Helio Chissini de Castro")
-        .arg(Arg::with_name("input")
-            .short("i")
-            .takes_value(true)
-            .required(true))
-        .get_matches();
-
     // Load the input file
-    let filename = input_arguments.value_of("input").unwrap();
-    let seats = utils::read_input(filename);
+    let datafile = advent_lib::utils::data_dir("2020", "day5-input.txt");
+    let seats = utils::read_input(&datafile);
 
     println!("Highest Seat ID: {:?}", process_program(seats));
 }
