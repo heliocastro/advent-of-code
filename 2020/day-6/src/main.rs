@@ -1,25 +1,14 @@
 extern crate clap;
 extern crate advent_lib;
 
-use clap::{Arg,App};
 use std::collections::HashMap;
 
 // Project internal moduels
 use advent_lib::utils;
 
 fn main() {
-    let input_arguments = App::new("Advent 2020 Day One")
-        .version("0.1.0")
-        .author("Helio Chissini de Castro")
-        .arg(Arg::with_name("input")
-            .short("i")
-            .takes_value(true)
-            .required(true))
-        .get_matches();
-
-    // Load the input file
-    let filename = input_arguments.value_of("input").unwrap();
-    let quest = utils::read_input(filename);
+    let datafile = advent_lib::utils::data_dir("2020", "day6-input.txt");
+    let quest = utils::read_input(&datafile);
 
     println!("Number of yes/all_yes answers: {:?}", process_program(quest));
 }
@@ -30,7 +19,9 @@ mod tests {
 
     #[test]
     fn test_base() {
-        let doc = utils::read_input("../2020/unittest/day6-test-input.txt");
+        let doc = utils::read_input(
+            &advent_lib::utils::unittest_dir("2020", "day6-test-input.txt")
+        );
         assert_eq!(process_program(doc.clone()), (11,6));
     }
 }
