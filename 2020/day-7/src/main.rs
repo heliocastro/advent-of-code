@@ -92,5 +92,5 @@ fn process_program(bag_colors:Vec<String>) -> (u32,u32) {
 
     let count = count_shiny_gold( &"shiny gold".to_string(), &bags);
 
-    return ( fit, count );
+    ( fit, count )
 }
